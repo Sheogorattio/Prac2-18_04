@@ -9,6 +9,7 @@ namespace Prac2_18_04
 {
     internal class Program
     {
+        
         static void Main(string[] args)
         {
             Bank b = new Bank("MBank");

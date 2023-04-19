@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml.Linq;
 
 namespace Prac2_18_04
 {
     public class Bank
     {
+        delegate void Handler();
         string defPath = "BankInfo.xml";
         XDocument _doc;
         public Bank(string name) 
@@ -20,19 +22,34 @@ namespace Prac2_18_04
         }
         public void ChangeMoneyThread()
         {
-            var root = _doc.Root;            
-            var MoneyElem = root.Elements("bank")?.FirstOrDefault(obj => obj.Attribute("name").Value == Name).Element("money");
-            MoneyElem.Value = money.ToString();
-            _doc.Save(defPath);
-            Console.WriteLine("Money value was changed");
+            
+            Handler Change = delegate ()
+            {
+                var root = _doc.Root;
+                var MoneyElem = root.Elements("bank")?.FirstOrDefault(obj => obj.Attribute("name").Value == Name).Element("money");
+                if (MoneyElem != null)
+                {
+                    MoneyElem.Value = money.ToString();
+                    _doc.Save(defPath);
+                    Console.WriteLine("Money value was changed");
+                }            
+            };
+            Change();
         }
         public void ChangePercentThread()
         {
-            var root = _doc.Root;
-            var PercentElem = root.Elements("bank")?.FirstOrDefault(obj => obj.Attribute("name").Value == Name).Element("percent");
-            PercentElem.Value = percent.ToString();
-            _doc.Save(defPath);
-            Console.WriteLine("Percent value as changed");
+            Handler Change = delegate ()
+            {
+                var root = _doc.Root;
+                var PercentElem = root.Elements("bank")?.FirstOrDefault(obj => obj.Attribute("name").Value == Name).Element("percent");
+                if (PercentElem != null)
+                {
+                    PercentElem.Value = percent.ToString();
+                    _doc.Save(defPath);
+                    Console.WriteLine("Percent value as changed");
+                }
+            };
+            Change();
 
         }
         public string Name { get; set; }
